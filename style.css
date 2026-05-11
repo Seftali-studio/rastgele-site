@@ -1,113 +1,195 @@
-/* Genel Ayarlar */
+/* Temel Sıfırlama ve Font */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-    background-color: #0a0a0c; /* Koyu gece siyahı */
-    color: #e0e0e0;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #050507; /* Ultra derin siyah */
+    color: #f1f5f9;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow: hidden;
 }
 
-/* Ana Konteyner - Cam Efekti */
+/* Ana Uygulama Paneli */
 #app {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 40px;
-    border-radius: 24px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    max-width: 450px;
-    width: 90%;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 30px;
+    border-radius: 28px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
 }
 
-h1 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    background: linear-gradient(90deg, #38bdf8, #818cf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -1px;
-}
-
-/* Test Alanı Kutusu */
-.test-area {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 16px;
-    padding: 20px;
-    margin: 20px 0;
-    border: 1px dashed #334155;
-}
-
-/* Botların Okuyamayacağı Karmaşık Kod Alanı */
-#captcha-box {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 2.5rem;
-    font-weight: 900;
+header h1 {
+    font-size: 1.5rem;
     color: #38bdf8;
-    background: #111827;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    letter-spacing: 8px;
-    text-shadow: 2px 2px 5px rgba(56, 189, 248, 0.3);
-    user-select: none; /* Kodu seçip kopyalamayı engeller */
+    margin-bottom: 8px;
+    text-align: center;
 }
 
-/* Giriş Alanı ve Butonlar */
+header p {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Adım Alanları */
+.step {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+
 input {
     width: 100%;
-    padding: 12px 16px;
-    background: #1e293b;
+    background: #0f172a;
     border: 1px solid #334155;
-    border-radius: 8px;
-    color: white;
-    font-size: 1rem;
-    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    color: #fff;
     outline: none;
-    transition: border-color 0.3s;
+    transition: all 0.3s ease;
 }
 
 input:focus {
     border-color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 
-button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
+.input-hint {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+/* Captcha Kutusu */
+#captcha-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+#captcha-box {
+    flex: 1;
+    background: #000;
+    color: #38bdf8;
+    font-family: 'Courier New', monospace;
+    font-size: 1.8rem;
     font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
-}
-
-.verify-btn {
-    background: linear-gradient(135deg, #38bdf8, #1d4ed8);
-    color: white;
-    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    letter-spacing: 6px;
+    user-select: none;
+    border: 1px solid #1e293b;
 }
 
 .refresh-btn {
-    background: transparent;
+    background: #1e293b;
     color: #94a3b8;
-    border: 1px solid #334155;
-    font-size: 0.9rem;
+    border: none;
+    padding: 0 15px;
+    border-radius: 10px;
+    cursor: pointer;
 }
 
-button:hover {
-    opacity: 0.9;
+/* Fare Takip Alanı (Yapay Zeka Hazırlığı) */
+#mouse-check-area {
+    position: relative;
+    height: 80px;
+    background: #020617;
+    border: 2px dashed #1e293b;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: crosshair;
+    transition: all 0.3s ease;
+}
+
+#mouse-check-area span {
+    font-size: 0.8rem;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+#progress-bar-bg {
+    width: 80%;
+    height: 6px;
+    background: #1e293b;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    transition: width 0.1s linear;
+}
+
+/* Ana Buton */
+.verify-btn {
+    width: 100%;
+    padding: 15px;
+    background: #38bdf8;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.verify-btn:hover {
+    background: #7dd3fc;
     transform: translateY(-2px);
 }
 
+.verify-btn:disabled {
+    background: #334155;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
 #result-msg {
+    text-align: center;
     margin-top: 15px;
-    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Güvenlik Bilgisi Alt Bar */
+.security-info {
+    margin-top: 20px;
+    font-size: 0.7rem;
+    color: #475569;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#security-level {
+    color: #4ade80;
+    font-weight: bold;
 }
