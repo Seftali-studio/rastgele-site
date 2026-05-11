@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siber Analiz v5 | Şeftali Studio Deep AI</title>
+    <title>Siber Güvenlik v5.2 | Şeftali Studio Deep AI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <!-- FORM EKRANI -->
+        <!-- FORM EKRANI (GİRİŞ) -->
         <div id="auth-container">
             <header>
-                <h1>Siber Güvenlik v5</h1>
-                <p>Derin davranışsal analiz sistemi aktif.</p>
+                <h1>Güvenlik Analizi v5.2</h1>
+                <p>Gelişmiş davranış ve karakter analizi aktif.</p>
             </header>
 
-            <!-- 1. ADIM: Mail Girişi -->
+            <!-- 1. ADIM: Mail Girişi (Karakter Analizli) -->
             <div class="step">
-                <label>E-posta Adresi</label>
-                <input type="email" id="user-email" placeholder="kullanici@mail.com" autocomplete="off">
-                <p class="input-hint" id="mail-hint">Alan adı güvenliği taranıyor...</p>
+                <label for="user-email">E-posta Adresi</label>
+                <input type="email" id="user-email" placeholder="kullanici@mail.com" autocomplete="off" required>
+                <p class="input-hint">Alan adı ve karakter yapısı taranır.</p>
             </div>
 
-            <!-- 2. ADIM: Matematik Testi (Yükleme hatası düzeltildi) -->
+            <!-- 2. ADIM: Matematik Testi (Yükleme Sorunu Çözüldü) -->
             <div class="step">
-                <label id="math-question">Soru hazırlanıyor...</label>
-                <input type="number" id="math-answer" placeholder="Cevabı buraya yazın">
-                <p class="input-hint">İşlem hızı ve ritmi ölçülür.</p>
+                <label id="math-question">Analiz motoru hazırlanıyor...</label>
+                <input type="number" id="math-answer" placeholder="İşlem sonucu?">
+                <p class="input-hint">İnsan hız limitleri kontrol edilir.</p>
             </div>
 
             <!-- 3. ADIM: Captcha -->
@@ -35,10 +35,10 @@
                     <div id="captcha-box">------</div>
                     <button type="button" onclick="generateCaptcha()" class="refresh-btn">🔄</button>
                 </div>
-                <input type="text" id="user-input" placeholder="Güvenlik Kodunu Girin" maxlength="6">
+                <input type="text" id="user-input" placeholder="Güvenlik Kodu" maxlength="6">
             </div>
 
-            <!-- 4. ADIM: Gelişmiş Fare Analiz Alanı (Derin Tarama) -->
+            <!-- 4. ADIM: Fare Analiz Alanı -->
             <div class="step">
                 <div id="mouse-check-area">
                     <span id="scan-text">FARE ANALİZ ALANI</span>
@@ -46,39 +46,54 @@
                         <div id="progress-bar"></div>
                     </div>
                     <small id="jitter-status" style="font-size: 10px; color: #475569; margin-top: 5px;">
-                        İvme Takibi: Bekleniyor
+                        Durum: Fareyi hareket ettirin
                     </small>
                 </div>
             </div>
 
-            <!-- GÖRÜNMEZ BOT TUZAĞI -->
-            <button id="trap-button" tabindex="-1" onclick="triggerTrap()" style="opacity: 0.001; position: absolute; top: 0; left: 0; width: 2px; height: 2px; cursor: default;">
-                Verify
-            </button>
+            <!-- GÖRÜNMEZ BOT TUZAĞI (HONEYPOT) -->
+            <button id="trap-button" tabindex="-1" onclick="triggerTrap()" style="opacity: 0.001; position: absolute; top: 0; left: 0; width: 2px; height: 2px; border: none; cursor: default;"></button>
 
             <div class="action-area">
                 <button onclick="processFinalVerification()" class="verify-btn" id="main-btn">
-                    GÜVENLİĞİ DOĞRULA
+                    ANALİZİ TAMAMLA
                 </button>
             </div>
         </div>
 
-        <!-- SONUÇ EKRANI -->
+        <!-- SONUÇ EKRANI (ANALİZ RAPORU) -->
         <div id="status-screen" class="hidden">
-            <h2 id="final-status-title">Analiz Tamamlandı</h2>
+            <h2 id="final-status-title">Analiz Raporu</h2>
+            
             <div id="score-card">
-                <p id="final-status-desc"></p>
+                <p id="final-status-desc" style="margin-bottom: 20px; font-size: 0.9rem;"></p>
+                
+                <!-- Detaylı Analiz Tablosu -->
                 <div class="analysis-results">
-                    <div id="mail-analysis-box" class="analysis-item">
-                        <span>Mail Türü:</span> <strong id="mail-type-res">---</strong>
+                    <div class="analysis-item">
+                        <span>Mail Analizi:</span> 
+                        <strong id="mail-type-res">Bekleniyor...</strong>
                     </div>
-                    <div id="risk-analysis-box" class="analysis-item">
-                        <span>Risk Skoru:</span> <strong id="risk-score-res">---</strong>
+                    <div class="analysis-item">
+                        <span>Davranış Skoru:</span> 
+                        <strong id="behavior-res">Normal</strong>
+                    </div>
+                    <div class="analysis-item">
+                        <span>Toplam Risk:</span> 
+                        <strong id="risk-score-res">%0</strong>
                     </div>
                 </div>
-                <div id="score-display"></div>
+
+                <div id="score-display">
+                    <!-- Güven Yüzdesi Buraya Gelecek -->
+                </div>
             </div>
-            <button onclick="location.reload()" class="retry-btn">Sistemi Yeniden Başlat</button>
+
+            <button onclick="location.reload()" class="retry-btn">Yeni Analiz Başlat</button>
+        </div>
+
+        <div class="security-footer">
+            Sistem Durumu: <span style="color: #4ade80;">Güvenli</span> | v5.2.0
         </div>
     </div>
 
