@@ -10,28 +10,21 @@ let mouseMovementScore = 0;
 let lastX = 0, lastY = 0;
 let totalMovements = 0;
 let linearMovements = 0;
-let roboticJitterCount = 0; // Yapay titreme takibi
+let roboticJitterCount = 0;
 let keystrokes = [];
-
-// Dev Temp Mail Listesi
-const tempMailDomains = [
-    "10minutemail.com", "guerrillamail.com", "sharklasers.com", "temp-mail.org", 
-    "yopmail.com", "mailinator.com", "dispostable.com", "dropmail.me", 
-    "moakt.com", "tempmailaddress.com", "getnada.com", "fakemail.net"
-];
 
 // --- 1. SİSTEM BAŞLATICI ---
 window.onload = () => {
     generateCaptcha();
     generateMathQuestion();
     mathStartTime = Date.now();
-    console.log("Siber Güvenlik v5 Aktif.");
+    console.log("Siber Güvenlik v5.2 Aktif - Analiz motoru hazır.");
 };
 
 // --- 2. BOT TUZAĞI (HONEYPOT) ---
 function triggerTrap() {
     trapTriggered = true;
-    riskScore += 100; // Görünmez butona basan direkt elenir
+    riskScore += 100;
 }
 
 // --- 3. MATEMATİK MOTORU ---
@@ -39,8 +32,7 @@ function generateMathQuestion() {
     const n1 = Math.floor(Math.random() * 15) + 5;
     const n2 = Math.floor(Math.random() * 15) + 5;
     mathSolution = n1 + n2;
-    const mathLabel = document.getElementById("math-question");
-    if(mathLabel) mathLabel.innerText = `${n1} + ${n2} sonucu nedir?`;
+    document.getElementById("math-question").innerText = `${n1} + ${n2} sonucu nedir?`;
 }
 
 // --- 4. CAPTCHA ÜRETİCİ ---
@@ -54,114 +46,122 @@ function generateCaptcha() {
     box.style.transform = `rotate(${Math.floor(Math.random() * 8) - 4}deg)`;
 }
 
-// --- 5. DERİN FARE ANALİZİ (JITTER & LINEARITY) ---
+// --- 5. FARE DAVRANIŞ ANALİZİ ---
 const mouseArea = document.getElementById("mouse-check-area");
 mouseArea.addEventListener('mousemove', (e) => {
     totalMovements++;
     
-    // A - Düz Çizgi Kontrolü
-    if (e.clientX === lastX || e.clientY === lastY) {
-        linearMovements++;
-    }
+    // Düz çizgi (Robotik) kontrolü
+    if (e.clientX === lastX || e.clientY === lastY) linearMovements++;
 
-    // B - Yapay Titreme (Jitter) Kontrolü
-    // Botlar bazen 1px sağ 1px sol yaparak insan taklidi yapar. 
-    // Eğer hareket farkı çok düzenli ve küçükse bu bottur.
+    // Yapay Titreme (Jitter) kontrolü
     let diffX = Math.abs(e.clientX - lastX);
     let diffY = Math.abs(e.clientY - lastY);
-    if ((diffX > 0 && diffX < 2) && (diffY > 0 && diffY < 2)) {
-        roboticJitterCount++;
-    }
+    if ((diffX > 0 && diffX < 2) && (diffY > 0 && diffY < 2)) roboticJitterCount++;
 
     lastX = e.clientX;
     lastY = e.clientY;
 
     if (mouseMovementScore < 100) {
-        mouseMovementScore += 0.9;
+        mouseMovementScore += 1.2;
         document.getElementById("progress-bar").style.width = mouseMovementScore + "%";
         if(mouseMovementScore >= 100) {
-            document.getElementById("jitter-status").innerText = "Analiz Tamamlandı";
+            document.getElementById("jitter-status").innerText = "Tarama Tamamlandı";
             document.getElementById("jitter-status").style.color = "#4ade80";
         }
     }
 });
 
-// --- 6. KLAVYE TAKİBİ ---
-document.getElementById("user-input").addEventListener("keydown", () => {
-    keystrokes.push(Date.now());
-});
-
-// --- 7. FİNAL ANALİZ MOTORU ---
+// --- 6. FİNAL ANALİZ MOTORU (v5.2 ÖZEL) ---
 function processFinalVerification() {
     riskScore = 0;
-    const email = document.getElementById("user-email").value;
+    const email = document.getElementById("user-email").value.toLowerCase().trim();
     const mathInput = parseInt(document.getElementById("math-answer").value);
     const captchaInput = document.getElementById("user-input").value;
     
-    const timeSpent = (Date.now() - pageLoadTime) / 1000;
+    const domain = email.split('@')[1] || "";
+    const namePart = email.split('@')[0] || "";
     const mathSolveTime = (Date.now() - mathStartTime) / 1000;
 
-    // A - Mail Analizi (En ağır ceza)
-    const domain = email.split('@')[1];
-    const isTemp = tempMailDomains.includes(domain);
-    if (isTemp) riskScore += 80; // Temp mail puanı artırıldı
+    // A - MAİL ANALİZİ (Gelişmiş)
+    const badDomains = ["deapad.com", "hotayov.com", "tempmail.org", "guerrillamail.com", "mail.tm"];
+    const goodDomains = ["gmail.com", "outlook.com", "hotmail.com", "icloud.com", "yahoo.com", "yandex.com"];
+    
+    let mailStatus = "Güvenli";
+    let isTemp = badDomains.includes(domain);
+    let isSuspicious = false;
 
-    // B - Fare Davranış Analizi
-    const linearityRatio = linearMovements / totalMovements;
-    if (linearityRatio > 0.6) riskScore += 50; // Çok düzse
-
-    const jitterRatio = roboticJitterCount / totalMovements;
-    if (jitterRatio > 0.3) riskScore += 40; // Robotik titreme varsa
-
-    // C - Hız ve Matematik Analizi
-    if (mathSolveTime < 2) riskScore += 45; // İnsan 2 saniyeden önce çözemez
-    if (mathInput !== mathSolution) { alert("Matematik cevabı yanlış!"); return; }
-
-    // D - Genel Yazım Hızı
-    if (keystrokes.length > 2) {
-        const speed = (keystrokes[keystrokes.length - 1] - keystrokes[0]) / keystrokes.length;
-        if (speed < 40) riskScore += 30; // Işık hızıyla yazan bottur
+    // v315 gibi rakam analizi
+    const digitMatch = namePart.match(/\d/g);
+    if (digitMatch && digitMatch.length >= 3) {
+        riskScore += 40;
+        isSuspicious = true;
     }
 
-    // E - Tuzak Kontrolü
+    if (isTemp) {
+        riskScore += 90;
+        mailStatus = "YASAKLI";
+    } else if (isSuspicious || !goodDomains.includes(domain)) {
+        riskScore += 30;
+        mailStatus = "ŞÜPHELİ";
+    }
+
+    // B - DAVRANIŞ ANALİZİ
+    let behaviorStatus = "Normal";
+    const linearityRatio = linearMovements / totalMovements;
+    const jitterRatio = roboticJitterCount / totalMovements;
+
+    if (linearityRatio > 0.55 || jitterRatio > 0.25 || mathSolveTime < 1.8) {
+        riskScore += 55;
+        behaviorStatus = "Robotik";
+    }
+
+    // C - TUZAK KONTROLÜ
     if (trapTriggered) riskScore = 100;
 
-    // F - Captcha & Alan Kontrolü
-    if (captchaInput !== generatedCaptcha) { alert("Güvenlik kodu hatalı!"); generateCaptcha(); return; }
-    if (mouseMovementScore < 95) { alert("Fare analizini tamamlayın!"); return; }
+    // D - KRİTİK HATA KONTROLLERİ
+    if (isNaN(mathInput) || mathInput !== mathSolution) { alert("Matematik cevabı hatalı!"); return; }
+    if (captchaInput !== generatedCaptcha) { alert("Güvenlik kodu yanlış!"); generateCaptcha(); return; }
+    if (mouseMovementScore < 95) { alert("Lütfen fare analizini tamamlayın!"); return; }
 
-    renderResultScreen(isTemp, riskScore);
+    renderResults(mailStatus, behaviorStatus, riskScore);
 }
 
-// --- 8. SONUÇ EKRANI ---
-function renderResultScreen(isTemp, score) {
+// --- 7. SONUÇLARI EKRANA YANSIT ---
+function renderResults(mailStatus, behaviorStatus, score) {
     document.getElementById("auth-container").classList.add("hidden");
     document.getElementById("status-screen").classList.remove("hidden");
 
-    const mailRes = document.getElementById("mail-type-res");
-    const riskRes = document.getElementById("risk-score-res");
+    const mailEl = document.getElementById("mail-type-res");
+    const behaviorEl = document.getElementById("behavior-res");
+    const riskEl = document.getElementById("risk-score-res");
     const title = document.getElementById("final-status-title");
     const desc = document.getElementById("final-status-desc");
 
-    if (isTemp) {
-        mailRes.innerText = "TEHLİKELİ (Temp Mail)";
-        mailRes.style.color = "#f87171";
+    // Mail Durumu Renklendirme
+    mailEl.innerText = mailStatus;
+    if (mailStatus === "YASAKLI") mailEl.className = "status-danger";
+    else if (mailStatus === "ŞÜPHELİ") mailEl.className = "status-warning";
+    else mailEl.className = "status-safe";
+
+    // Davranış Durumu Renklendirme
+    behaviorEl.innerText = behaviorStatus;
+    behaviorEl.className = behaviorStatus === "Robotik" ? "status-danger" : "status-safe";
+
+    // Risk Skoru
+    const finalScore = Math.min(score, 100);
+    riskEl.innerText = `%${finalScore}`;
+    riskEl.className = finalScore >= 50 ? "status-danger" : "status-safe";
+
+    if (finalScore >= 50) {
+        title.innerText = "🤖 ERİŞİM REDDEDİLDİ";
+        title.className = "status-danger";
+        desc.innerText = "Analiz motorumuz yüksek riskli davranışlar veya geçici mail kullanımı tespit etti.";
     } else {
-        mailRes.innerText = "GÜVENLİ (Gerçek Mail)";
-        mailRes.style.color = "#4ade80";
+        title.innerText = "✅ DOĞRULAMA BAŞARILI";
+        title.className = "status-safe";
+        desc.innerText = "Davranışlarınız ve kimliğiniz sistem tarafından güvenli olarak işaretlendi.";
     }
 
-    riskRes.innerText = `%${Math.min(score, 100)}`;
-    
-    if (score >= 50) {
-        title.innerText = "🤖 ERİŞİM ENGELLENDİ";
-        title.style.color = "#f87171";
-        desc.innerText = "Sistemimiz insan limitlerinin dışında bir hız, çok düz fare hareketleri veya robotik titremeler tespit etti.";
-    } else {
-        title.innerText = "✅ İNSAN ONAYI ALINDI";
-        title.style.color = "#4ade80";
-        desc.innerText = "Analiz başarılı. Davranışlarınız tamamen doğal ve insani limitler içerisinde.";
-    }
-
-    document.getElementById("score-display").innerHTML = `Sistem Güven Puanı: <strong>%${100 - Math.min(score, 100)}</strong>`;
+    document.getElementById("score-display").innerHTML = `Güven Yüzdesi: <strong>%${100 - finalScore}</strong>`;
 }
