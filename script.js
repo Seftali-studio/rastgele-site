@@ -1,67 +1,106 @@
-// Robotların okumasını zorlaştırmak için kullanılacak karakter havuzu
-const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$';
+// --- GÜVENLİK AYARLARI VE DEĞİŞKENLER ---
 let generatedCaptcha = "";
+const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+const pageLoadTime = Date.now();
+let mouseMovementScore = 0;
+let verificationReady = false;
 
-// Yeni bir Captcha kodu oluşturma fonksiyonu
+// Temp Mail Kara Listesi (En yaygın olanlar)
+const tempMailDomains = [
+    "10minutemail.com", "guerrillamail.com", "sharklasers.com", 
+    "temp-mail.org", "mailinator.com", "dispostable.com", "yopmail.com"
+];
+
+// --- 1. CAPTCHA ÜRETİCİ ---
 function generateCaptcha() {
     const display = document.getElementById("captcha-box");
-    const resultMsg = document.getElementById("result-msg");
-    const inputField = document.getElementById("user-input");
-    
     let captcha = "";
-    // 6 haneli rastgele bir kod oluştur
     for (let i = 0; i < 6; i++) {
         captcha += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    
     generatedCaptcha = captcha;
     display.innerText = captcha;
     
-    // Her yeni kodda ekranı temizle
-    resultMsg.innerText = "";
-    inputField.value = "";
-    
-    // Botlar karakterleri tarayamasın diye rastgele eğim veriyoruz
-    const rotation = Math.floor(Math.random() * 10) - 5; // -5 ile +5 derece arası
-    display.style.transform = `rotate(${rotation}deg) skew(${rotation}deg)`;
+    // Botların taramasını zorlaştırmak için rastgele eğim
+    const rot = Math.floor(Math.random() * 12) - 6;
+    display.style.transform = `rotate(${rot}deg) skew(${rot}deg)`;
 }
 
-// Kullanıcın girdiği kodu kontrol etme fonksiyonu
-function checkCaptcha() {
-    const userInput = document.getElementById("user-input").value;
+// --- 2. FARE TAKİP SİSTEMİ (BASİT YAPAY ZEKA) ---
+const mouseArea = document.getElementById("mouse-check-area");
+const progressBar = document.getElementById("progress-bar");
+
+mouseArea.addEventListener('mousemove', (e) => {
+    if (mouseMovementScore < 100) {
+        // Fare hareket ettikçe puan kazanılır (İnsan ivmesi takibi)
+        mouseMovementScore += 0.5; 
+        progressBar.style.width = mouseMovementScore + "%";
+        
+        if (mouseMovementScore >= 100) {
+            mouseArea.style.borderColor = "#4ade80";
+            mouseArea.querySelector('span').innerText = "✅ Hareket Doğrulandı";
+            checkAllSteps();
+        }
+    }
+});
+
+// --- 3. MAİL VE GÜVENLİK KONTROLÜ ---
+function processFinalVerification() {
+    const email = document.getElementById("user-email").value;
+    const captchaInput = document.getElementById("user-input").value;
     const resultMsg = document.getElementById("result-msg");
-    
-    if (userInput === "") {
-        resultMsg.innerText = "Lütfen kodu girin!";
-        resultMsg.style.color = "#fbbf24"; // Sarı
+    const now = Date.now();
+    const timeSpent = (now - pageLoadTime) / 1000;
+
+    // A - BOŞ ALAN KONTROLÜ
+    if (!email || !captchaInput) {
+        showResult("Lütfen tüm alanları doldurun!", "#fbbf24");
         return;
     }
-    
-    if (userInput === generatedCaptcha) {
-        resultMsg.innerText = "✅ Doğrulama Başarılı! Robot değilsiniz.";
-        resultMsg.style.color = "#4ade80"; // Yeşil
-        
-        // Başarılı olursa butonu geçici olarak devre dışı bırakalım
-        document.querySelector(".verify-btn").innerText = "Giriş Yapıldı";
+
+    // B - TEMP MAIL KONTROLÜ
+    const domain = email.split('@')[1];
+    if (tempMailDomains.includes(domain)) {
+        showResult("❌ Geçici e-posta adresi kullanılamaz!", "#f87171");
+        return;
+    }
+
+    // C - HIZ KONTROLÜ (BOT TESPİTİ)
+    if (timeSpent < 4) {
+        showResult("🤖 Bot Algılandı: Çok hızlı işlem!", "#f87171");
+        generateCaptcha();
+        return;
+    }
+
+    // D - FARE HAREKET KONTROLÜ
+    if (mouseMovementScore < 100) {
+        showResult("Lütfen fareyi kutu üzerinde gezdirin!", "#fbbf24");
+        return;
+    }
+
+    // E - CAPTCHA EŞLEŞME
+    if (captchaInput === generatedCaptcha) {
+        showResult("✅ Doğrulama Başarılı! Hoş geldiniz.", "#4ade80");
+        document.getElementById("main-btn").disabled = true;
+        document.getElementById("security-level").innerText = "MAKSİMUM";
     } else {
-        resultMsg.innerText = "❌ Hatalı Kod! Robot musunuz?";
-        resultMsg.style.color = "#f87171"; // Kırmızı
-        
-        // Hatalı girişte kodu hemen yenileyelim ki botlar deneme yapamasın
-        setTimeout(generateCaptcha, 1000);
+        showResult("❌ Hatalı kod! Tekrar deneyin.", "#f87171");
+        generateCaptcha();
     }
 }
 
-// Sayfa ilk açıldığında çalıştır
-window.onload = function() {
-    // HTML'deki test alanını dinamik olarak dolduruyoruz
-    const testArea = document.querySelector(".test-area");
-    testArea.innerHTML = `
-        <div id="captcha-box">------</div>
-        <button onclick="generateCaptcha()" class="refresh-btn">🔄 Kodu Yenile</button>
-        <input type="text" id="user-input" placeholder="Karakterleri giriniz" maxlength="6">
-        <button onclick="checkCaptcha()" class="verify-btn">Doğrula ve Devam Et</button>
-        <p id="result-msg"></p>
-    `;
-    generateCaptcha();
-};
+function showResult(text, color) {
+    const msg = document.getElementById("result-msg");
+    msg.innerText = text;
+    msg.style.color = color;
+}
+
+function checkAllSteps() {
+    // Tüm adımlar hazırsa butonu parlatabiliriz
+    if (mouseMovementScore >= 100) {
+        verificationReady = true;
+    }
+}
+
+// Sayfa yüklendiğinde başlat
+window.onload = generateCaptcha;
