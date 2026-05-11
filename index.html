@@ -3,53 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siber Güvenlik Paneli v2 | Şeftali Studio</title>
+    <title>Siber Güvenlik Analizi v3 | Şeftali Studio</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <header>
-            <h1>Güvenlik Doğrulaması</h1>
-            <p>Lütfen robot olmadığınızı kanıtlayın.</p>
-        </header>
+        <!-- FORM EKRANI -->
+        <div id="auth-container">
+            <header>
+                <h1>Güvenlik Analizörü</h1>
+                <p>Davranış tabanlı robot tespiti aktif.</p>
+            </header>
 
-        <!-- 1. ADIM: Mail Girişi (Temp-mail kontrolü burada yapılacak) -->
-        <div class="step" id="step-1">
-            <label for="user-email">E-posta Adresiniz</label>
-            <input type="email" id="user-email" placeholder="ornek@mail.com" required>
-            <p class="input-hint">Geçici (temp) mail adresleri kabul edilmez.</p>
-        </div>
-
-        <!-- 2. ADIM: Gelişmiş Captcha -->
-        <div class="step" id="step-2">
-            <div id="captcha-container">
-                <div id="captcha-box">------</div>
-                <button type="button" onclick="generateCaptcha()" class="refresh-btn">🔄 Yenile</button>
+            <div class="step">
+                <label for="user-email">E-posta Adresi</label>
+                <input type="email" id="user-email" placeholder="kullanici@mail.com">
+                <p class="input-hint">Mail sağlayıcısı güvenliği kontrol edilir.</p>
             </div>
-            <input type="text" id="user-input" placeholder="Kodu girin" maxlength="6">
-        </div>
 
-        <!-- 3. ADIM: Fare Hareket Alanı (Basit Zeka) -->
-        <div class="step" id="step-3">
-            <div id="mouse-check-area">
-                <span>Fareyi Bu Alanda Gezdirin</span>
-                <div id="progress-bar-bg">
-                    <div id="progress-bar"></div>
+            <div class="step">
+                <div id="captcha-container">
+                    <div id="captcha-box">------</div>
+                    <button type="button" onclick="generateCaptcha()" class="refresh-btn">🔄</button>
+                </div>
+                <input type="text" id="user-input" placeholder="Kodu giriniz" maxlength="6">
+            </div>
+
+            <div class="step">
+                <div id="mouse-check-area">
+                    <span>FARE ANALİZ ALANI</span>
+                    <p style="font-size: 0.7rem; color: #64748b; margin-bottom: 10px;">
+                        (Lütfen fareyi bu alanda rastgele gezdirin)
+                    </p>
+                    <div id="progress-bar-bg">
+                        <div id="progress-bar"></div>
+                    </div>
                 </div>
             </div>
+
+            <div class="action-area">
+                <button onclick="processFinalVerification()" class="verify-btn" id="main-btn">
+                    ANALİZİ BAŞLAT
+                </button>
+            </div>
         </div>
 
-        <!-- SONUÇ VE BUTON -->
-        <div class="action-area">
-            <button onclick="processFinalVerification()" class="verify-btn" id="main-btn">
-                Sistemi Doğrula
-            </button>
-            <p id="result-msg"></p>
+        <!-- SONUÇ EKRANI (Başlangıçta Gizli) -->
+        <div id="status-screen" class="hidden">
+            <div class="status-icon" id="final-icon"></div>
+            <h2 id="final-status-title">Analiz Ediliyor...</h2>
+            <div id="score-card">
+                <p id="final-status-desc"></p>
+                <div id="score-display"></div>
+            </div>
+            <button onclick="location.reload()" class="retry-btn">Sistemi Sıfırla</button>
         </div>
 
-        <!-- Arka planda süreyi takip eden gizli sayaç simgesi -->
-        <div class="security-info">
-            Güvenlik Seviyesi: <span id="security-level">Yüksek</span>
+        <div class="security-footer">
+            Sistem Durumu: <span id="security-level">Gözlem Modu</span>
         </div>
     </div>
 
