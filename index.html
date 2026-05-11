@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siber Analiz v4 | Şeftali Studio</title>
+    <title>Siber Analiz v5 | Şeftali Studio Deep AI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,21 +11,22 @@
         <!-- FORM EKRANI -->
         <div id="auth-container">
             <header>
-                <h1>Güvenlik Analizörü v4</h1>
-                <p>Yapay zeka destekli davranış takibi aktif.</p>
+                <h1>Siber Güvenlik v5</h1>
+                <p>Derin davranışsal analiz sistemi aktif.</p>
             </header>
 
             <!-- 1. ADIM: Mail Girişi -->
             <div class="step">
                 <label>E-posta Adresi</label>
                 <input type="email" id="user-email" placeholder="kullanici@mail.com" autocomplete="off">
+                <p class="input-hint" id="mail-hint">Alan adı güvenliği taranıyor...</p>
             </div>
 
-            <!-- 2. ADIM: Matematik Testi (Hız Kontrolü İçin) -->
+            <!-- 2. ADIM: Matematik Testi (Yükleme hatası düzeltildi) -->
             <div class="step">
-                <label id="math-question">Matematik Sorusu Yükleniyor...</label>
-                <input type="number" id="math-answer" placeholder="Sonuç?">
-                <p class="input-hint">İşlem hızı analiz edilir.</p>
+                <label id="math-question">Soru hazırlanıyor...</label>
+                <input type="number" id="math-answer" placeholder="Cevabı buraya yazın">
+                <p class="input-hint">İşlem hızı ve ritmi ölçülür.</p>
             </div>
 
             <!-- 3. ADIM: Captcha -->
@@ -34,41 +35,50 @@
                     <div id="captcha-box">------</div>
                     <button type="button" onclick="generateCaptcha()" class="refresh-btn">🔄</button>
                 </div>
-                <input type="text" id="user-input" placeholder="Güvenlik Kodu" maxlength="6">
+                <input type="text" id="user-input" placeholder="Güvenlik Kodunu Girin" maxlength="6">
             </div>
 
-            <!-- 4. ADIM: Geniş Fare Analiz Alanı -->
+            <!-- 4. ADIM: Gelişmiş Fare Analiz Alanı (Derin Tarama) -->
             <div class="step">
                 <div id="mouse-check-area">
-                    <span>FARE ANALİZ ALANI</span>
+                    <span id="scan-text">FARE ANALİZ ALANI</span>
                     <div id="progress-bar-bg">
                         <div id="progress-bar"></div>
                     </div>
+                    <small id="jitter-status" style="font-size: 10px; color: #475569; margin-top: 5px;">
+                        İvme Takibi: Bekleniyor
+                    </small>
                 </div>
             </div>
 
-            <!-- BOT TUZAĞI (Görünmez Buton) -->
-            <button id="trap-button" tabindex="-1" onclick="triggerTrap()" style="opacity: 0.001; position: absolute; top: 0; left: 0; width: 1px; height: 1px;">
-                Gizli Doğrulama
+            <!-- GÖRÜNMEZ BOT TUZAĞI -->
+            <button id="trap-button" tabindex="-1" onclick="triggerTrap()" style="opacity: 0.001; position: absolute; top: 0; left: 0; width: 2px; height: 2px; cursor: default;">
+                Verify
             </button>
 
             <div class="action-area">
                 <button onclick="processFinalVerification()" class="verify-btn" id="main-btn">
-                    ANALİZİ TAMAMLA
+                    GÜVENLİĞİ DOĞRULA
                 </button>
             </div>
         </div>
 
         <!-- SONUÇ EKRANI -->
         <div id="status-screen" class="hidden">
-            <h2 id="final-status-title">Analiz Sonucu</h2>
+            <h2 id="final-status-title">Analiz Tamamlandı</h2>
             <div id="score-card">
                 <p id="final-status-desc"></p>
-                <hr style="margin: 15px 0; opacity: 0.1;">
-                <p id="mail-analysis" style="font-weight: bold; margin-bottom: 10px;"></p>
+                <div class="analysis-results">
+                    <div id="mail-analysis-box" class="analysis-item">
+                        <span>Mail Türü:</span> <strong id="mail-type-res">---</strong>
+                    </div>
+                    <div id="risk-analysis-box" class="analysis-item">
+                        <span>Risk Skoru:</span> <strong id="risk-score-res">---</strong>
+                    </div>
+                </div>
                 <div id="score-display"></div>
             </div>
-            <button onclick="location.reload()" class="retry-btn">Başa Dön</button>
+            <button onclick="location.reload()" class="retry-btn">Sistemi Yeniden Başlat</button>
         </div>
     </div>
 
