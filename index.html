@@ -2,17 +2,57 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Gelişmiş Bot Testi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siber Güvenlik Paneli v2 | Şeftali Studio</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <h1>Yeni Nesil Doğrulama</h1>
-        <div class="test-area">
-            <!-- Testler buraya gelecek -->
-            <p>Yükleniyor...</p>
+        <header>
+            <h1>Güvenlik Doğrulaması</h1>
+            <p>Lütfen robot olmadığınızı kanıtlayın.</p>
+        </header>
+
+        <!-- 1. ADIM: Mail Girişi (Temp-mail kontrolü burada yapılacak) -->
+        <div class="step" id="step-1">
+            <label for="user-email">E-posta Adresiniz</label>
+            <input type="email" id="user-email" placeholder="ornek@mail.com" required>
+            <p class="input-hint">Geçici (temp) mail adresleri kabul edilmez.</p>
+        </div>
+
+        <!-- 2. ADIM: Gelişmiş Captcha -->
+        <div class="step" id="step-2">
+            <div id="captcha-container">
+                <div id="captcha-box">------</div>
+                <button type="button" onclick="generateCaptcha()" class="refresh-btn">🔄 Yenile</button>
+            </div>
+            <input type="text" id="user-input" placeholder="Kodu girin" maxlength="6">
+        </div>
+
+        <!-- 3. ADIM: Fare Hareket Alanı (Basit Zeka) -->
+        <div class="step" id="step-3">
+            <div id="mouse-check-area">
+                <span>Fareyi Bu Alanda Gezdirin</span>
+                <div id="progress-bar-bg">
+                    <div id="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SONUÇ VE BUTON -->
+        <div class="action-area">
+            <button onclick="processFinalVerification()" class="verify-btn" id="main-btn">
+                Sistemi Doğrula
+            </button>
+            <p id="result-msg"></p>
+        </div>
+
+        <!-- Arka planda süreyi takip eden gizli sayaç simgesi -->
+        <div class="security-info">
+            Güvenlik Seviyesi: <span id="security-level">Yüksek</span>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
